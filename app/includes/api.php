@@ -43,6 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (count($row) > 0) {
         // Product with the same title already exists
         echo json_encode(['message' => false]);
+    } else if (empty($price) || empty($quantity)) {
+        echo json_encode(['message' => "error"]);
     } else {
         $stmt = $db->prepare("INSERT INTO products (title, price, quantity) VALUES (:title, :price, :quantity)");
         $stmt->bindValue(':title', $name);

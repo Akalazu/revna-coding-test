@@ -37,6 +37,9 @@ export default function Home() {
         if (data.message == false) {
           alert("Error! Product already exists");
         }
+        if (data.message == "error") {
+          alert("Error! Kindly fill all fields");
+        }
         // Refresh products list
         setName("");
         setPrice("");
@@ -57,7 +60,10 @@ export default function Home() {
     const value = e.target.value;
     // Check if the input value is an integer
     if (!/^\d+$/.test(value)) {
-      alert("Please enter a valid integer for quantity.");
+      alert("Error! Please enter a valid integer for quantity.");
+      return;
+    } else if (value.length < 1) {
+      alert("Error! Field cannot be empty");
       return;
     }
     setQuantity(value);
