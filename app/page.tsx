@@ -2,11 +2,27 @@
 // import Link from "next/link";
 import { useEffect, useState } from "react";
 
+interface productInterface {
+  id: number;
+  title: string;
+  price: number;
+  quantity: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost/coding-test/app/includes/api.php")
+      .then((response) => response.json())
+      .then((data) => setProducts(data))
+      .catch((error) => console.error("Error fetching products:", error));
+  }, []);
 
   const addProduct = () => {
     fetch("http://localhost/coding-test/app/includes/api.php", {
@@ -17,7 +33,34 @@ export default function Home() {
       body: JSON.stringify({ name: name, price: price, quantity: quantity }),
     })
       .then((response) => response.json())
-      .then((data) => console.log(data));
+      .then((data) => {
+        if (data.message == false) {
+          alert("Error! Product already exists");
+        }
+        // Refresh products list
+        setName("");
+        setPrice("");
+        setQuantity("");
+        fetchProducts();
+      })
+      .catch((e) => console.log({ e }));
+  };
+
+  const fetchProducts = () => {
+    fetch("http://localhost/coding-test/app/includes/api.php")
+      .then((response) => response.json())
+      .then((data) => setProducts(data))
+      .catch((error) => console.error("Error fetching products:", error));
+  };
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Check if the input value is an integer
+    if (!/^\d+$/.test(value)) {
+      alert("Please enter a valid integer for quantity.");
+      return;
+    }
+    setQuantity(value);
   };
 
   return (
@@ -46,7 +89,7 @@ export default function Home() {
                 placeholder="Quantity"
                 className="border p-2"
                 value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                onChange={handleQuantityChange}
               />
               <button
                 className="btn btn-success text-white hover:bg-white hover:ring-green-500 hover:ring hover:text-black"
@@ -55,11 +98,12 @@ export default function Home() {
                 Add Product
               </button>
             </div>
-            <h1 className="text-3xl font-bold my-5">All Product</h1>
+            <h1 className="text-3xl font-bold my-5 mt-20">All Product</h1>
             <div className="hero">
-              <table className="table table-zebra">
+              <table className="table table-zebra text-center">
                 <thead>
-                  <tr>
+                  <tr className="px-20">
+                    <td>S/N</td>
                     <td>Name</td>
                     <td>Price</td>
                     <td>Quantity</td>
@@ -68,34 +112,18 @@ export default function Home() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Udumah Victor</td>
-                    <td>$1300</td>
-                    <td>24 Pieces</td>
-                    <td>24th January, 2023</td>
-                    <td>25th January, 2023</td>
-                  </tr>
-                  <tr>
-                    <td>Dan Jesse Finn</td>
-                    <td>$24</td>
-                    <td>24 Pieces</td>
-                    <td>24th January, 2023</td>
-                    <td>11th January, 2024</td>
-                  </tr>
-                  <tr>
-                    <td>Akalazu Udochukwu David</td>
-                    <td>$1300</td>
-                    <td>24 Pieces</td>
-                    <td>24th January, 2024</td>
-                    <td>21st July, 2024</td>
-                  </tr>
-                  <tr>
-                    <td>Akalazu Udochukwu David</td>
-                    <td>$1300</td>
-                    <td>24 Pieces</td>
-                    <td>24th January, 2023</td>
-                    <td>11th January, 2024</td>
-                  </tr>
+                  {products.map((product: productInterface) => (
+                    <tr key={product.id} className="px-20">
+                      <td>{product.id}.</td>
+                      <td style={{ textTransform: "capitalize" }}>
+                        {product.title}
+                      </td>
+                      <td>{product.price}</td>
+                      <td>{product.quantity}</td>
+                      <td>{product.created_at}</td>
+                      <td>{product.updated_at}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

@@ -27,34 +27,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 // Endpoint for adding a new product
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
-    $name = $data['name'];
+    $name = strtolower($data['name']);
     $price = $data['price'];
     $quantity = $data['quantity'];
 
     $db = new PDO('sqlite:./database/product.db');
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    print_r($db);
 
-    $stmt = $db->prepare("INSERT INTO products (title, price, quantity) VALUES (:title, :price, :quantity)");
-    $stmt->bindValue(':title', $name);
-    $stmt->bindValue(':price', $price);
-    $stmt->bindValue(':quantity', $quantity);
+    // Check if product with the same title already exists
+    $stmt_check = $db->prepare('SELECT * FROM products WHERE title = :title');
+    $stmt_check->bindValue(':title', $name);
+    $stmt_check->execute();
+    $row = $stmt_check->fetchAll(PDO::FETCH_OBJ);
 
-    if ($stmt->execute()) {
-        echo json_encode(['message' => 'Product added successfully']);
+    if (count($row) > 0) {
+        // Product with the same title already exists
+        echo json_encode(['message' => false]);
     } else {
-        http_response_code(500);
-        echo json_encode(['error' => 'Failed to add product']);
+        $stmt = $db->prepare("INSERT INTO products (title, price, quantity) VALUES (:title, :price, :quantity)");
+        $stmt->bindValue(':title', $name);
+        $stmt->bindValue(':price', $price);
+        $stmt->bindValue(':quantity', $quantity);
+
+        if ($stmt->execute()) {
+            echo json_encode(['message' => true]);
+        } else {
+            echo json_encode(['message' => false]);
+        }
     }
 }
 
 // Endpoint for viewing all products
-// if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-//     $stmt = $connection->prepare('SELECT * FROM product');
-//     $result = $stmt->execute();
-//     $products = [];
-//     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-//         $products[] = $row;
-//     }
-//     echo json_encode($products);
-// }
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $db = new PDO('sqlite:./database/product.db');
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $stmt = $db->query('SELECT * FROM products');
+
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $products[] = $row;
+    }
+    echo json_encode($products);
+}
