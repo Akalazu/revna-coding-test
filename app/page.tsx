@@ -8,7 +8,18 @@ export default function Home() {
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
 
-  
+  const addProduct = () => {
+    fetch("http://localhost/coding-test/app/includes/api.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: name, price: price, quantity: quantity }),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+  };
+
   return (
     <>
       <div className="hero bg-base-50">
@@ -37,7 +48,10 @@ export default function Home() {
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
               />
-              <button className="btn btn-success text-white hover:bg-white hover:ring-green-500 hover:ring hover:text-black">
+              <button
+                className="btn btn-success text-white hover:bg-white hover:ring-green-500 hover:ring hover:text-black"
+                onClick={addProduct}
+              >
                 Add Product
               </button>
             </div>

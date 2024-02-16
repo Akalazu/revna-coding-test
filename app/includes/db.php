@@ -11,7 +11,7 @@ class Database extends SQLite3
     {
         $query = "CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT UNIQUE,
+    title TEXT,
     price REAL,
     quantity INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -41,7 +41,7 @@ if (!is_dir($db_dir))
     mkdir($db_dir);
 
 // Database pathname
-$db_file = $db_dir . "products.sqlite";
+$db_file = $db_dir . "product.db";
 
 // Database Connection
 $connection = new Database($db_file);
