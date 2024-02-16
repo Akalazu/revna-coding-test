@@ -76,7 +76,7 @@ export default function Home() {
         </thead>
         <tbody>
           {funcData.map((funcD: funcDataInterface) => (
-            <tr>
+            <tr key={funcD.id}>
               <td>{funcD.id}</td>
               <td>{funcD.name}</td>
             </tr>
