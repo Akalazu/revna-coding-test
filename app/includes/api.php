@@ -1,10 +1,9 @@
 <?php
-require 'db.php';
-// echo 'mfelwfm';
-// $connection = new PDO('database/product.sqlite');
-// print_r($connection);
-
 // backend API
+
+// Connection to database
+require 'db.php';
+
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
     header('Access-Control-Allow-Credentials: true');

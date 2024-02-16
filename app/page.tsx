@@ -24,6 +24,7 @@ export default function Home() {
       .catch((error) => console.error("Error fetching products:", error));
   }, []);
 
+  // Add product to database
   const addProduct = () => {
     fetch("http://localhost/coding-test/app/includes/api.php", {
       method: "POST",
@@ -49,6 +50,7 @@ export default function Home() {
       .catch((e) => console.log({ e }));
   };
 
+  // Fetch Product from Database
   const fetchProducts = () => {
     fetch("http://localhost/coding-test/app/includes/api.php")
       .then((response) => response.json())
@@ -56,6 +58,7 @@ export default function Home() {
       .catch((error) => console.error("Error fetching products:", error));
   };
 
+  // Event handler for the quantity input fields
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Check if the input value is an integer
