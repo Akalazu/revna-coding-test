@@ -18,7 +18,7 @@ export default function Home() {
   const [quantity, setQuantity] = useState("");
 
   useEffect(() => {
-    fetch("app/includes/api.php")
+    fetch("https://rariblecraft.com/coding-test/includes/api.php")
       .then((response) => response.json())
       .then((data) => setProducts(data))
       .catch((error) => console.error("Error fetching products:", error));
@@ -26,7 +26,7 @@ export default function Home() {
 
   // Add product to database
   const addProduct = () => {
-    fetch("app/includes/api.php", {
+    fetch("https://rariblecraft.com/coding-test/includes/api.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export default function Home() {
 
   // Fetch Product from Database
   const fetchProducts = () => {
-    fetch("http://localhost/coding-test/app/includes/api.php")
+    fetch("https://rariblecraft.com/coding-test/includes/api.php")
       .then((response) => response.json())
       .then((data) => setProducts(data))
       .catch((error) => console.error("Error fetching products:", error));
